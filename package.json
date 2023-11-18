@@ -12,6 +12,18 @@
       {
         "command": "alt-to-img-generator.showHelloWorld",
         "title": "Hello World (Vue): Show"
+      },
+      {
+        "command": "generator-alt-image.getAlt",
+        "title": "Generate Alt Image"
+      },
+      {
+        "command": "generator-alt-image.getImage",
+        "title": "Generate Image "
+      },
+      {
+        "command": "generator-alt-image.createImageFolder",
+        "title": "Generate Image Folder"
       }
     ],
     "viewsContainers": {
@@ -31,6 +43,21 @@
           "name": "Image generator config"
         }
       ]
+    },
+    "configuration": {
+      "title": "Generator Alt Image",
+      "properties": {
+        "generator-alt-image.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable this extension"
+        },
+        "generator-alt-image.api-key": {
+          "type": "string",
+          "default": "mi-free-api",
+          "description": "API key for the service"
+        }
+      }
     }
   },
   "scripts": {
