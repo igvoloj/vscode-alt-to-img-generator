@@ -12,6 +12,18 @@
       {
         "command": "alt-to-img-generator.showHelloWorld",
         "title": "Hello World (Vue): Show"
+      },
+      {
+        "command": "alt-to-img-generator.getAlt",
+        "title": "Generate Alt Image"
+      },
+      {
+        "command": "alt-to-img-generator.getImage",
+        "title": "Generate Image "
+      },
+      {
+        "command": "alt-to-img-generator.createImageFolder",
+        "title": "Generate Image Folder"
       }
     ],
     "viewsContainers": {
@@ -31,35 +43,42 @@
           "name": "Image generator config"
         }
       ]
+    },
+    "configuration": {
+      "title": "Generator Alt Image",
+      "properties": {
+        "alt-to-img-generator.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable this extension"
+        },
+        "alt-to-img-generator.api-key": {
+          "type": "string",
+          "default": "mi-free-api",
+          "description": "API key for the service"
+        }
+      }
     }
   },
   "scripts": {
-    "install:all": "npm install && cd webview-ui && npm install",
+    "install:all": "npm install && cd webview-ui && npm install && cd webview-ui && npm run build",
     "start:webview": "cd webview-ui && npm run start",
-    "build:webview": "cd webview-ui && npm run build",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
-    "@types/mocha": "^10.0.4",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.46.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
-    "@vscode/test-electron": "^2.3.6",
     "eslint": "^7.19.0",
+    "glob": "^7.1.6",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3",
     "vscode-test": "^1.5.0"
-  },
-  "dependencies": {
-    "openai": "^4.19.0",
-    "mocha": "^10.2.0",
-    "glob": "^7.1.6"
   }
 }

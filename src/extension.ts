@@ -1,41 +1,65 @@
 import { CancellationToken, window, commands, ExtensionContext, SnippetString, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext } from "vscode";
 import { getNonce } from "./utilities/getNonce";
 import { getUri } from "./utilities/getUri";
+import * as vscode from 'vscode';
+import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
+import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
 
 export function activate(context: ExtensionContext) {
-
+  setCommands(context);
+  setTriggers();
   const provider = new GenerateAltImgViewProvider(context.extensionUri);
 
-	context.subscriptions.push(
-		window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider));
-  
+  context.subscriptions.push(
+    window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider));
+
+}
+
+function setCommands(context: vscode.ExtensionContext) {
+  const extensionName = "alt-to-img-generator";
+  const commands = {
+    getImage: `${extensionName}.getImage`,
+    getAlt: `${extensionName}.getAlt`,
+    createImageFolder: `${extensionName}.createImageFolder`,
+  };
+  const disposables = [
+    vscode.commands.registerCommand(commands.getImage, () => setSrcInImage()),
+    vscode.commands.registerCommand(commands.getAlt, () => setAltInImage()),
+    vscode.commands.registerCommand(commands.createImageFolder, () => createFolderImageInRoot()),
+  ];
+
+  disposables.forEach((disposable) => context.subscriptions.push(disposable));
+}
+
+function setTriggers() {
+  vscode.workspace.onDidChangeTextDocument((event) => handleChangeText(event));
 }
 
 class GenerateAltImgViewProvider implements WebviewViewProvider {
 
-	public static readonly viewType = 'alt-to-img-generator-view';
+  public static readonly viewType = 'alt-to-img-generator-view';
 
-	constructor(
-		private readonly _extensionUri: Uri,
-	) { }
+  constructor(
+    private readonly _extensionUri: Uri,
+  ) { }
 
-	public resolveWebviewView(
-		webviewView: WebviewView,
-		context: WebviewViewResolveContext,
-		_token: CancellationToken,
-	) {
-		webviewView.webview.options = {
-			// Allow scripts in the webview
-			enableScripts: true,
+  public resolveWebviewView(
+    webviewView: WebviewView,
+    context: WebviewViewResolveContext,
+    _token: CancellationToken,
+  ) {
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
 
-			localResourceRoots: [
-				this._extensionUri
-			]
-		};
+      localResourceRoots: [
+        this._extensionUri
+      ]
+    };
 
-		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
+    webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
 
-	}
+  }
 
   /**
    * Defines and returns the HTML that should be rendered within the webview panel.
