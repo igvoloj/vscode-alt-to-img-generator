@@ -16,7 +16,7 @@ export function activate(context: ExtensionContext) {
 }
 
 function setCommands(context: vscode.ExtensionContext) {
-  const extensionName = "generator-alt-image";
+  const extensionName = "alt-to-img-generator";
   const commands = {
     getImage: `${extensionName}.getImage`,
     getAlt: `${extensionName}.getAlt`,

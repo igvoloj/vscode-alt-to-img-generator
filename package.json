@@ -14,15 +14,15 @@
         "title": "Hello World (Vue): Show"
       },
       {
-        "command": "generator-alt-image.getAlt",
+        "command": "alt-to-img-generator.getAlt",
         "title": "Generate Alt Image"
       },
       {
-        "command": "generator-alt-image.getImage",
+        "command": "alt-to-img-generator.getImage",
         "title": "Generate Image "
       },
       {
-        "command": "generator-alt-image.createImageFolder",
+        "command": "alt-to-img-generator.createImageFolder",
         "title": "Generate Image Folder"
       }
     ],
@@ -47,12 +47,12 @@
     "configuration": {
       "title": "Generator Alt Image",
       "properties": {
-        "generator-alt-image.enable": {
+        "alt-to-img-generator.enable": {
           "type": "boolean",
           "default": true,
           "description": "Enable/disable this extension"
         },
-        "generator-alt-image.api-key": {
+        "alt-to-img-generator.api-key": {
           "type": "string",
           "default": "mi-free-api",
           "description": "API key for the service"
@@ -61,9 +61,8 @@
     }
   },
   "scripts": {
-    "install:all": "npm install && cd webview-ui && npm install",
+    "install:all": "npm install && cd webview-ui && npm install && cd webview-ui && npm run build",
     "start:webview": "cd webview-ui && npm run start",
-    "build:webview": "cd webview-ui && npm run build",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
