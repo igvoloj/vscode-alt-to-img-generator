@@ -23,26 +23,6 @@ To install the Alt to Image Generator, follow these steps:
 1. Clone the repository to your local machine.
 2. For installation instructions, please refer to the [INSTALL.md](INSTALL.md) file.
 
-## Usage
+## Local Development
 
-For install the visual studio code extension, follow this steps:
-
-- Open Visual Studio Code
-- Go to the extension tab in left sidebar
-- Search " Alt to Image Generator"
-- Click in "Install" button next to the search bar
-
-# TODO
-
-- check footer like a sidebar
-         OR
-- dropdown options left sidebar
-
-- readme.md ready for colaborators (mas o menos)
-- notion ready
-  
-- split left sidebar in tab
-- look to a fancy way to render images and select then
-- calls to api from extension with service or file
-
-- when call generate image or alt check the other attribute to prompt
+To develop you can launch the debugger of vscode (F5)

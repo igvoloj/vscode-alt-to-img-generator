@@ -6,4 +6,3 @@ Detailed instructions on how to install, configure, and get the project running.
 
 The first time you need run `npm run install:all`
 When you develop in VUE needs  `npm run build:webview`
-To develop you can launch the debugger of vscode (F5)
