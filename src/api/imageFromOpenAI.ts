@@ -42,9 +42,7 @@ async function fetchImageFromOpenAIapi(prompt: string, OPENAI_API_KEY: string): 
 }
 
 async function downloadImage(url: string, folderPath: string): Promise<string> {
-    if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-    }
+   
 
     const response = await fetch(url);
     if (!response.ok) {throw new Error(`Failed to download image. Status code: ${response.status}`);}
@@ -53,10 +51,19 @@ async function downloadImage(url: string, folderPath: string): Promise<string> {
     const filePath = path.join(folderPath, fileName);
     const fileStream = fs.createWriteStream(filePath);
     
+    // await new Promise((resolve, reject) => {
+    //     response.body.pipe(fileStream);
+    //     response.body.on("error", reject);
+    //     fileStream.on("finish", resolve);
+    // });
+
     await new Promise((resolve, reject) => {
         response.body.pipe(fileStream);
-        response.body.on("error", reject);
-        fileStream.on("finish", resolve);
+        response.body.on('error', (err) => {
+            fileStream.close();
+            reject(err);
+        });
+        fileStream.on('finish', resolve);
     });
 
     return filePath;

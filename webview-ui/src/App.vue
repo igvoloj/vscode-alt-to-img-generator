@@ -21,10 +21,10 @@ provideVSCodeDesignSystem().register([vsCodeButton(), vsCodeTextField(), vsCodeD
 // components at once, there's a handy convenience function:
 //
 // provideVSCodeDesignSystem().register(allComponents);
-const apiKeyRef = ref('')
-const folderRef = ref('')
-const promptRef = ref('')
-const providerRef = ref('')
+const apiKeyRef = ref('Adl8fDGUJ8CR2F0Rr3ttE5CVMmN6dDtfyVW9ZirIId1PT0eGmUfqKbO4')
+const folderRef = ref('public/cats')
+const promptRef = ref('white cat')
+const providerRef = ref('pexels')
 
 
 function handleHowdyClick() {

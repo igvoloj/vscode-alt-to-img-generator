@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
 import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
 import { imageFromOpenAI } from './api/imageFromOpenAI';
-import { fetchImageFromPexels } from "./api/imageFromPexels";
+import { imageFromPexels } from "./api/imageFromPexels";
 
 const cats = {
   'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
@@ -164,7 +164,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
               }
               case 'pexels': {
                  console.log('generateImgCommandReceived', payload);
-            const result = await fetchImageFromPexels(payload.prompt, payload.folder, payload.apiKey);
+            const result = await imageFromPexels(payload.prompt, payload.folder, payload.apiKey);
             window.showInformationMessage(result);
               }
             }
