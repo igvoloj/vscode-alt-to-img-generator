@@ -12,8 +12,9 @@ export async function createFolderImageInRoot(pathToSave: string = "public/image
     const folderPath = path.join(rootFolder, pathToSave);
     if (fs.existsSync(folderPath)) {
         window.showInformationMessage('Folder already exists');
-        return;
+        return folderPath;
     }
-    fs.mkdirSync(folderPath);
+    fs.mkdirSync(folderPath, { recursive: true });
     window.showInformationMessage('Folder created');
+    return folderPath;
 }

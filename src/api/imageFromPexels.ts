@@ -1,10 +1,10 @@
-import path from 'path';
+import * as path from 'path';
 import fs, { createWriteStream } from 'fs';
 import { pipeline } from 'stream';
 import { promisify } from 'util';;
 import fetch from 'node-fetch';
 import { createFolderImageInRoot } from '../utilities/createFolderImageInRoot';
-import { workspace } from 'vscode';
+import { window, workspace } from 'vscode';
 
 export async function imageFromPexels(query: string, folderPath: string, PEXELS_API_KEY: string): Promise<string> {
     const timeout = new Promise((resolve, reject) => {
@@ -68,24 +68,18 @@ async function fetchImageFromPexelsApi(query: string, apikey: string): Promise<s
 }
 
 async function downloadImage(url: string, pathToSave: string): Promise<string> {
-    const workspaceFolders = workspace.workspaceFolders;
-    // @ts-ignore
-    const rootFolder = workspaceFolders[0].uri.fsPath;
-    const folderPath = path.join(rootFolder, pathToSave);
-
+    const folderPath = await createFolderImageInRoot(pathToSave);
     const response = await fetch(url);
     if (!response.ok) {throw new Error(`Failed to download image. Status code: ${response.status}`);}
-
-    // await createFolderImageInRoot(folderPath);
-    // const fileName = path.basename(new URL(url).pathname);
-    // const filePath = path.join(folderPath, fileName)
-    const fileStream = createWriteStream(folderPath);
+    const fileName = path.basename(new URL(url).pathname);
+    const fileStream = createWriteStream(folderPath + '/' + fileName);
+    
 
     if (response.body) {
         await pipe(response.body, fileStream);
     } else {
         throw new Error('Response body is null');
     }
-
+    // @ts-ignore
     return folderPath;
 }

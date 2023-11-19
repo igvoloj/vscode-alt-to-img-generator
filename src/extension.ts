@@ -1,34 +1,45 @@
-import { CancellationToken, window, commands, ExtensionContext, SnippetString, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, Disposable } from "vscode";
+import {
+  CancellationToken,
+  window,
+  commands,
+  ExtensionContext,
+  SnippetString,
+  Uri,
+  Webview,
+  WebviewView,
+  WebviewViewProvider,
+  WebviewViewResolveContext,
+  Disposable,
+} from "vscode";
 import { getNonce } from "./utilities/getNonce";
 import { getUri } from "./utilities/getUri";
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
 import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
-import { imageFromOpenAI } from './api/imageFromOpenAI';
+import { imageFromOpenAI } from "./api/imageFromOpenAI";
 import { imageFromPexels } from "./api/imageFromPexels";
 
 const cats = {
-  'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
-  'Compiling Cat': 'https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif'
+  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
 };
 
 export function activate(context: ExtensionContext) {
   setCommands(context);
   setTriggers();
 
-
   const provider = new GenerateAltImgViewProvider(context.extensionUri);
 
   const panel = vscode.window.createWebviewPanel(
-    'catCoding',
-    'Cat Coding',
+    "catCoding",
+    "Cat Coding",
     vscode.ViewColumn.One,
     {}
   );
 
   let iteration = 0;
   const updateWebview = () => {
-    const cat = iteration++ % 2 ? 'Compiling Cat' : 'Coding Cat';
+    const cat = iteration++ % 2 ? "Compiling Cat" : "Coding Cat";
     panel.title = cat;
     panel.webview.html = getWebviewContent(cat);
   };
@@ -40,9 +51,9 @@ export function activate(context: ExtensionContext) {
   setInterval(updateWebview, 1000);
 
   context.subscriptions.push(
-    window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider));
+    window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider)
+  );
   context.subscriptions.push(panel);
-
 }
 
 function setCommands(context: vscode.ExtensionContext) {
@@ -55,7 +66,9 @@ function setCommands(context: vscode.ExtensionContext) {
   const disposables = [
     vscode.commands.registerCommand(commands.getImage, () => setSrcInImage()),
     vscode.commands.registerCommand(commands.getAlt, () => setAltInImage()),
-    vscode.commands.registerCommand(commands.createImageFolder, () => createFolderImageInRoot('images')),
+    vscode.commands.registerCommand(commands.createImageFolder, () =>
+      createFolderImageInRoot("images")
+    ),
   ];
 
   disposables.forEach((disposable) => context.subscriptions.push(disposable));
@@ -66,32 +79,27 @@ function setTriggers() {
 }
 
 class GenerateAltImgViewProvider implements WebviewViewProvider {
-
-  public static readonly viewType = 'alt-to-img-generator-view';
+  public static readonly viewType = "alt-to-img-generator-view";
 
   constructor(
     private readonly _extensionUri: Uri,
     private readonly _disposables: Disposable[] = []
-
-  ) { }
+  ) {}
 
   public resolveWebviewView(
     webviewView: WebviewView,
     context: WebviewViewResolveContext,
-    _token: CancellationToken,
+    _token: CancellationToken
   ) {
     webviewView.webview.options = {
       // Allow scripts in the webview
       enableScripts: true,
 
-      localResourceRoots: [
-        this._extensionUri
-      ]
+      localResourceRoots: [this._extensionUri],
     };
 
-		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
+    webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
     this._setWebviewMessageListener(webviewView.webview);
-
   }
 
   /**
@@ -132,7 +140,6 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
     `;
   }
 
-
   /**
    * Sets up an event listener to listen for messages passed from the webview context and
    * executes code based on the message that is recieved.
@@ -157,15 +164,21 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
             return;
           case "generateImage":
             switch (payload.provider) {
-              case 'openai': {
-                console.log('generateImgCommandReceived', payload);
-                const result = await imageFromOpenAI(payload.prompt, payload.folder, payload.apiKey);
+              case "openai": {
+                const result = await imageFromOpenAI(
+                  payload.prompt,
+                  payload.folder,
+                  payload.apiKey
+                );
                 window.showInformationMessage(result);
               }
-              case 'pexels': {
-                 console.log('generateImgCommandReceived', payload);
-            const result = await imageFromPexels(payload.prompt, payload.folder, payload.apiKey);
-            window.showInformationMessage(result);
+              case "pexels": {
+                const result = await imageFromPexels(
+                  payload.prompt,
+                  payload.folder,
+                  payload.apiKey
+                );
+                window.showInformationMessage(result);
               }
             }
           // Add more switch case statements here as more webview message commands
@@ -176,8 +189,6 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
       this._disposables
     );
   }
-
-
 }
 
 function getWebviewContent(cat: keyof typeof cats) {
@@ -189,7 +200,7 @@ function getWebviewContent(cat: keyof typeof cats) {
     <title>Cat Coding</title>
 </head>
 <body>
-    <img src="${cats['Coding Cat']}" width="300" />
+    <img src="${cats["Coding Cat"]}" width="300" />
     <img src="${cats[cat]}" width="300" />
 </body>
 </html>`;

@@ -43,7 +43,10 @@ function handleHowdyClick() {
 
 <template>
   <main>
-    <h1>Hello world!</h1>
+    <h1>Alt to image converter</h1>
+    <div>
+
+    </div>
     <!-- <input label="Text1" v-model="inputRef" /> -->
     <vscode-dropdown style="margin-bottom: 2px">
       <vscode-option value="openai" @click="providerRef = 'openai'">Open AI ("dall-e-3")</vscode-option>
@@ -63,5 +66,10 @@ main {
   justify-content: center;
   align-items: flex-start;
   height: 100%;
+}
+
+.column {
+  display: flex;
+;
 }
 </style>
