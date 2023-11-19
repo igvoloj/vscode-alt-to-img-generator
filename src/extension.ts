@@ -4,6 +4,7 @@ import { getUri } from "./utilities/getUri";
 import * as vscode from 'vscode';
 import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
 import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
+import { fetchImageFromOpenAI } from './api/imageFromOpenAI';
 
 const cats = {
   'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
@@ -13,7 +14,10 @@ const cats = {
 export function activate(context: ExtensionContext) {
   setCommands(context);
   setTriggers();
+
+
   const provider = new GenerateAltImgViewProvider(context.extensionUri);
+
   const panel = vscode.window.createWebviewPanel(
     'catCoding',
     'Cat Coding',
@@ -83,7 +87,8 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
         this._extensionUri
       ]
     };
-    webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
+
+		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
     this._setWebviewMessageListener(webviewView.webview);
 
   }
@@ -136,9 +141,10 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
    */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
-      (message: any) => {
+      async (message: any) => {
         const command = message.command;
-        const text = message.text;
+        const text = message.text ? message.text : null;
+        const payload = message.payload ? message.payload : null;
 
         switch (command) {
           case "hello":
@@ -148,6 +154,10 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
           case "setDirectoryFolder":
             createFolderImageInRoot(text);
             return;
+          case "generateImage":
+            console.log('generateImgCommandReceived', payload);
+            const result = await fetchImageFromOpenAI(payload.prompt, payload.folder, payload.apiKey);
+            window.showInformationMessage(result);
           // Add more switch case statements here as more webview message commands
           // are created within the webview context (i.e. inside media/main.js)
         }
