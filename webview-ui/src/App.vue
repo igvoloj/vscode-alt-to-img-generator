@@ -38,9 +38,8 @@ function handleHowdyClick() {
   <main>
     <h1>Hello world!</h1>
     <!-- <input label="Text1" v-model="inputRef" /> -->
-    <vscode-text-field label="Text2" :value="inputRef" @input="(event: any ) => inputRef = event.target.value" />
+    <vscode-text-field label="Text2" :value="inputRef" @input="(event: any) => inputRef = event.target.value" />
     <vscode-button @click="handleHowdyClick">Howdy!</vscode-button>
-    <img src="/hello-world.png" alt="hol23a" width="150"/>
   </main>
 </template>
 
