@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
 import { checkAttribute } from './checkAttribute';
+import { getAttributeValue } from './getAttributeValue';
 
 export function checkSrc(textLine: string, currentCursorPosition: number, textToReplace: string) {
+    if (textLine.length === 0) {
+        vscode.window.showInformationMessage('No text in line');
+    }
     let srcPosition = textLine.indexOf("src");
     if (srcPosition === -1) {
         // create src attribute
@@ -20,5 +24,9 @@ export function checkSrc(textLine: string, currentCursorPosition: number, textTo
         });
         return;
     }
+    const regexAltInTextLine = /alt=".*"/g;
+    const promptAlt = getAttributeValue(textLine.match(regexAltInTextLine));
+    console.log({ promptAlt });
+
     checkAttribute(textLine, currentCursorPosition, textToReplace, srcPosition);
 }
