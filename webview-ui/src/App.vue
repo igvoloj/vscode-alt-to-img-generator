@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDropdown, vsCodeOption } from "@vscode/webview-ui-toolkit";
+import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDropdown, vsCodeOption, vsCodeTextField } from "@vscode/webview-ui-toolkit";
 import { vscode } from "./utilities/vscode";
+import { ref } from "vue";
 
 // In order to use the Webview UI Toolkit web components they
 // must be registered with the browser (i.e. webview) using the
 // syntax below.
-provideVSCodeDesignSystem().register([vsCodeButton()]);
+provideVSCodeDesignSystem().register([vsCodeButton(), vsCodeTextField()]);
 
 // To register more toolkit components, simply import the component
 // registration function and call it from within the register
@@ -21,18 +22,25 @@ provideVSCodeDesignSystem().register([vsCodeButton()]);
 //
 // provideVSCodeDesignSystem().register(allComponents);
 
+
+const inputRef = ref('')
 function handleHowdyClick() {
+  console.log('inputRef', inputRef)
   vscode.postMessage({
-    command: "hello",
-    text: "Hey there partner! 🤠",
+    command: "setDirectoryFolder",
+    text: inputRef.value
   });
+  vscode.setState({ text: inputRef.value })
 }
 </script>
 
 <template>
   <main>
     <h1>Hello world!</h1>
+    <!-- <input label="Text1" v-model="inputRef" /> -->
+    <vscode-text-field label="Text2" :value="inputRef" @input="(event: any ) => inputRef = event.target.value" />
     <vscode-button @click="handleHowdyClick">Howdy!</vscode-button>
+    <img src="/hello-world.png" alt="hol23a" width="150"/>
   </main>
 </template>
 

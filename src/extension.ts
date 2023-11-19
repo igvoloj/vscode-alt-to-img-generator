@@ -5,13 +5,38 @@ import * as vscode from 'vscode';
 import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
 import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
 
+const cats = {
+  'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
+  'Compiling Cat': 'https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif'
+};
+
 export function activate(context: ExtensionContext) {
   setCommands(context);
   setTriggers();
   const provider = new GenerateAltImgViewProvider(context.extensionUri);
+  const panel = vscode.window.createWebviewPanel(
+    'catCoding',
+    'Cat Coding',
+    vscode.ViewColumn.One,
+    {}
+  );
+
+  let iteration = 0;
+  const updateWebview = () => {
+    const cat = iteration++ % 2 ? 'Compiling Cat' : 'Coding Cat';
+    panel.title = cat;
+    panel.webview.html = getWebviewContent(cat);
+  };
+
+  // Set initial content
+  updateWebview();
+
+  // And schedule updates to the content every second
+  setInterval(updateWebview, 1000);
 
   context.subscriptions.push(
     window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider));
+    context.subscriptions.push(panel);
 
 }
 
@@ -25,7 +50,7 @@ function setCommands(context: vscode.ExtensionContext) {
   const disposables = [
     vscode.commands.registerCommand(commands.getImage, () => setSrcInImage()),
     vscode.commands.registerCommand(commands.getAlt, () => setAltInImage()),
-    vscode.commands.registerCommand(commands.createImageFolder, () => createFolderImageInRoot()),
+    vscode.commands.registerCommand(commands.createImageFolder, () => createFolderImageInRoot('images')),
   ];
 
   disposables.forEach((disposable) => context.subscriptions.push(disposable));
@@ -58,7 +83,6 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
         this._extensionUri
       ]
     };
-
 		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
     this._setWebviewMessageListener(webviewView.webview);
 
@@ -121,6 +145,9 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
             // Code that should run in response to the hello message command
             window.showInformationMessage(text);
             return;
+          case "setDirectoryFolder":
+            createFolderImageInRoot(text);
+            return;
           // Add more switch case statements here as more webview message commands
           // are created within the webview context (i.e. inside media/main.js)
         }
@@ -131,4 +158,19 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
   }
 
   
+}
+
+function getWebviewContent(cat: keyof typeof cats) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Coding</title>
+</head>
+<body>
+    <img src="${cats['Coding Cat']}" width="300" />
+    <img src="${cats[cat]}" width="300" />
+</body>
+</html>`;
 }
