@@ -27,7 +27,6 @@ export function checkAlt(textLine: string, currentCursorPosition: number, textTo
     }
     const regexSrcInTextLine = /src=".*"/g;
     const promptSrc = getAttributeValue(textLine.match(regexSrcInTextLine));
-    console.log({ promptSrc });
 
     checkAttribute(textLine, currentCursorPosition, textToReplace, altPosition);
 }

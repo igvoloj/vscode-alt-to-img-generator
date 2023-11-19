@@ -19,41 +19,26 @@ import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
 import { imageFromOpenAI } from "./api/imageFromOpenAI";
 import { imageFromPexels } from "./api/imageFromPexels";
 
-const cats = {
-  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
-};
-
 export function activate(context: ExtensionContext) {
   setCommands(context);
   setTriggers();
-
   const provider = new GenerateAltImgViewProvider(context.extensionUri);
-
-  const panel = vscode.window.createWebviewPanel(
-    "catCoding",
-    "Cat Coding",
-    vscode.ViewColumn.One,
-    {}
-  );
-
-  let iteration = 0;
-  const updateWebview = () => {
-    const cat = iteration++ % 2 ? "Compiling Cat" : "Coding Cat";
-    panel.title = cat;
-    panel.webview.html = getWebviewContent(cat);
-  };
-
-  // Set initial content
-  updateWebview();
-
-  // And schedule updates to the content every second
-  setInterval(updateWebview, 1000);
 
   context.subscriptions.push(
     window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider)
   );
-  context.subscriptions.push(panel);
+
+
+  // const panel = vscode.window.createWebviewPanel(
+  //   "catCoding",
+  //   "Cat Coding",
+  //   vscode.ViewColumn.One,
+  //   {}
+  // );
+  // panel.webview.html = getWebviewContent(
+  //   "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif"
+  // );
+  // context.subscriptions.push(panel);
 }
 
 function setCommands(context: vscode.ExtensionContext) {
@@ -64,7 +49,9 @@ function setCommands(context: vscode.ExtensionContext) {
     createImageFolder: `${extensionName}.createImageFolder`,
   };
   const disposables = [
-    vscode.commands.registerCommand(commands.getImage, () => setSrcInImage()),
+    vscode.commands.registerCommand(commands.getImage, () => {
+      setSrcInImage();
+    }),
     vscode.commands.registerCommand(commands.getAlt, () => setAltInImage()),
     vscode.commands.registerCommand(commands.createImageFolder, () =>
       createFolderImageInRoot("images")
@@ -170,7 +157,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
                   payload.folder,
                   payload.apiKey
                 );
-                window.showInformationMessage(result);
+                window.showInformationMessage('Image generated from OpenAI API');
               }
               case "pexels": {
                 const result = await imageFromPexels(
@@ -178,7 +165,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
                   payload.folder,
                   payload.apiKey
                 );
-                window.showInformationMessage(result);
+                window.showInformationMessage('Image generated from Pexels API');
               }
             }
           // Add more switch case statements here as more webview message commands
@@ -191,7 +178,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
   }
 }
 
-function getWebviewContent(cat: keyof typeof cats) {
+function getWebviewContent(url: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -200,8 +187,7 @@ function getWebviewContent(cat: keyof typeof cats) {
     <title>Cat Coding</title>
 </head>
 <body>
-    <img src="${cats["Coding Cat"]}" width="300" />
-    <img src="${cats[cat]}" width="300" />
+    <img src="${url}" width="300" />
 </body>
 </html>`;
 }

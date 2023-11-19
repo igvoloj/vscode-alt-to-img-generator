@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDropdown, vsCodeOption, vsCodeTextField } from "@vscode/webview-ui-toolkit";
+import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDropdown, vsCodeOption, vsCodePanelTab, vsCodePanelView, vsCodePanels, vsCodeTextField } from "@vscode/webview-ui-toolkit";
 import { vscode } from "./utilities/vscode";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 // In order to use the Webview UI Toolkit web components they
 // must be registered with the browser (i.e. webview) using the
 // syntax below.
-provideVSCodeDesignSystem().register([vsCodeButton(), vsCodeTextField(), vsCodeDropdown(), vsCodeOption()]);
+provideVSCodeDesignSystem().register([vsCodeButton(), vsCodeTextField(), vsCodeDropdown(), vsCodeOption(), vsCodePanelTab(), vsCodePanelView(), vsCodePanels()]);
 
 // To register more toolkit components, simply import the component
 // registration function and call it from within the register
@@ -21,11 +21,19 @@ provideVSCodeDesignSystem().register([vsCodeButton(), vsCodeTextField(), vsCodeD
 // components at once, there's a handy convenience function:
 //
 // provideVSCodeDesignSystem().register(allComponents);
-const apiKeyRef = ref('Adl8fDGUJ8CR2F0Rr3ttE5CVMmN6dDtfyVW9ZirIId1PT0eGmUfqKbO4')
-const folderRef = ref('public/cats')
-const promptRef = ref('white cat')
-const providerRef = ref('pexels')
 
+const apiKeyRef = ref('')
+const folderRef = ref('')
+const promptRef = ref('')
+const providerRef = ref('')
+
+onMounted(() => {
+  const payload = vscode.getState() as { provider: string, apiKey: string, folder: string, prompt: string }
+  apiKeyRef.value = payload.apiKey ? payload.apiKey : ''
+  providerRef.value = payload.provider ? payload.provider : ''
+  folderRef.value = payload.folder ? payload.folder : ''
+  promptRef.value = payload.prompt ? payload.prompt : ''
+})
 
 function handleHowdyClick() {
   vscode.postMessage({
@@ -37,25 +45,36 @@ function handleHowdyClick() {
       prompt: promptRef.value
     }
   })
-  vscode.setState({ API_KEY: apiKeyRef.value })
+  vscode.setState({
+      provider: providerRef.value,
+      apiKey: apiKeyRef.value,
+      folder: folderRef.value,
+      prompt: promptRef.value
+    })
 }
 </script>
 
 <template>
   <main>
-    <h1>Alt to image converter</h1>
-    <div>
-
-    </div>
-    <!-- <input label="Text1" v-model="inputRef" /> -->
-    <vscode-dropdown style="margin-bottom: 2px">
-      <vscode-option value="openai" @click="providerRef = 'openai'">Open AI ("dall-e-3")</vscode-option>
-      <vscode-option value="pexels" @click="providerRef = 'pexels'">Pexels API</vscode-option>
-    </vscode-dropdown>
-    <vscode-text-field style="margin-bottom: 2px" label="API_KEY" :value="apiKeyRef" @input="(event: any ) => apiKeyRef = event.target.value" >API KEY</vscode-text-field> 
-    <vscode-text-field style="margin-bottom: 2px" label="Folder" :value="folderRef" @input="(event: any ) => folderRef = event.target.value" />
-    <vscode-text-field label="Prompt" :value="promptRef" @input="(event: any ) => promptRef = event.target.value" />
-    <vscode-button @click="handleHowdyClick">Generate</vscode-button>
+    <vscode-panels style="width: 100%">
+      <vscode-panel-tab id="tab-1">SETTINGS</vscode-panel-tab>
+      <vscode-panel-view id="view-1"> 
+        
+        <div class="column">
+          <vscode-dropdown  style="margin-bottom: 2px">
+          <vscode-option value="openai" @click="providerRef = 'openai'">Open AI</vscode-option>
+          <vscode-option value="pexels" @click="providerRef = 'pexels'">Pexels API</vscode-option>
+          <vscode-option value="stablediffusion" @click="providerRef = 'stablediffusion'">Stable Diffusion (Soon)</vscode-option>
+        </vscode-dropdown>
+        <vscode-text-field style="margin-bottom: 2px" label="API_KEY" :value="apiKeyRef"
+          @input="(event: any) => apiKeyRef = event.target.value">API KEY</vscode-text-field>
+        <vscode-text-field style="margin-bottom: 2px" label="Folder" :value="folderRef"
+          @input="(event: any) => folderRef = event.target.value" >DIST FOLDER</vscode-text-field>
+        <vscode-text-field label="Prompt" :value="promptRef" @input="(event: any) => promptRef = event.target.value" >PROMPT</vscode-text-field>
+        <vscode-button @click="handleHowdyClick">Generate</vscode-button>
+        </div>
+       </vscode-panel-view>
+    </vscode-panels>
   </main>
 </template>
 
@@ -70,6 +89,13 @@ main {
 
 .column {
   display: flex;
-;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: .7rem
+}
+
+vscode-option {
+  padding: .4rem;
 }
 </style>
