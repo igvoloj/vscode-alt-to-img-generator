@@ -4,7 +4,7 @@ import { pipeline } from 'stream';
 import { promisify } from 'util';;
 import fetch from 'node-fetch';
 
-export async function fetchImageFromPexels(query: string, folderPath: string, PEXELS_API_KEY: string): Promise<string> {
+export async function imageFromPexels(query: string, folderPath: string, PEXELS_API_KEY: string): Promise<string> {
     const timeout = new Promise((resolve, reject) => {
         setTimeout(() => {
             reject(new Error('Timeout'));
@@ -66,6 +66,10 @@ async function fetchImageFromPexelsApi(query: string, apikey: string): Promise<s
 }
 
 async function downloadImage(url: string, folderPath: string): Promise<string> {
+    if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+    }
+    
     const response = await fetch(url);
     if (!response.ok) {throw new Error(`Failed to download image. Status code: ${response.status}`);}
 
