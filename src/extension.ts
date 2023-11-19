@@ -4,7 +4,8 @@ import { getUri } from "./utilities/getUri";
 import * as vscode from 'vscode';
 import { handleChangeText, setAltInImage, setSrcInImage } from "./main";
 import { createFolderImageInRoot } from "./utilities/createFolderImageInRoot";
-import { fetchImageFromOpenAI } from './api/imageFromOpenAI';
+import { imageFromOpenAI } from './api/imageFromOpenAI';
+import { fetchImageFromPexels } from "./api/imageFromPexels";
 
 const cats = {
   'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
@@ -155,9 +156,18 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
             createFolderImageInRoot(text);
             return;
           case "generateImage":
-            console.log('generateImgCommandReceived', payload);
-            const result = await fetchImageFromOpenAI(payload.prompt, payload.folder, payload.apiKey);
+            switch (payload.provider) {
+              case 'openai': {
+                console.log('generateImgCommandReceived', payload);
+                const result = await imageFromOpenAI(payload.prompt, payload.folder, payload.apiKey);
+                window.showInformationMessage(result);
+              }
+              case 'pexels': {
+                 console.log('generateImgCommandReceived', payload);
+            const result = await fetchImageFromPexels(payload.prompt, payload.folder, payload.apiKey);
             window.showInformationMessage(result);
+              }
+            }
           // Add more switch case statements here as more webview message commands
           // are created within the webview context (i.e. inside media/main.js)
         }

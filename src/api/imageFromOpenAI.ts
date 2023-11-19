@@ -3,8 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import OpenAI from 'openai';
 
-export async function fetchImageFromOpenAI(query: string, folderPath: string, OPENAI_API_KEY: string): Promise<string> {
-    console.log('Query:', query);
+export async function imageFromOpenAI(query: string, folderPath: string, OPENAI_API_KEY: string): Promise<string> {
     const timeout = new Promise((resolve, reject) => {
         setTimeout(() => {
             reject(new Error('Timeout'));
