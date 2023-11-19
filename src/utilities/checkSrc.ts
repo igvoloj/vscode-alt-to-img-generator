@@ -17,9 +17,10 @@ export function checkSrc(textLine: string, currentCursorPosition: number, textTo
             const containsEndTag = textLine.includes("/>");
             let srcLocation: vscode.Position;
             if (!containsEndTag) {
-                srcLocation = new vscode.Position(editor.selection.active.line, textLine.length);
+                srcLocation = new vscode.Position(editor.selection.active.line, textLine.length + 10);
+            } else {
+                srcLocation = new vscode.Position(editor.selection.active.line, textLine.length - 2);
             }
-            srcLocation = new vscode.Position(editor.selection.active.line, textLine.length - 2);
             editBuilder.insert(srcLocation, ` src="${textToReplace}"`);
         });
         return;
