@@ -1,71 +1,48 @@
-# vscode-alt-to-img-generator README
+# Alt to Image Generator
 
-This is the README for your extension "vscode-alt-to-img-generator". After writing up a brief description, we recommend including the following sections.
+## Description
 
-## Features
+The Alt to Image Generator is a project aimed at automating the generation of alternative text (alt text) for images or the other way around, in web development. Alt text is important for accessibility purposes, as it provides a textual description of an image for visually impaired users. This project aims to simplify the process of generating alt text by leveraging machine learning techniques.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Technology Stack
 
-For example if there is an image subfolder under your extension project workspace:
+The Alt to Image Generator is built using the following technologies:
 
-\!\[feature X\]\(images/feature-x.png\)
+- Programming Language: Typescript
+- Framework: VueJS
+- Libraries: OpenAI
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Status
 
-## Requirements
+The project is currently in the Alpha stage. We are actively developing and testing the software to ensure its reliability and effectiveness.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Installation
 
-## Extension Settings
+To install the Alt to Image Generator, follow these steps:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. Clone the repository to your local machine.
+2. For installation instructions, please refer to the [INSTALL.md](INSTALL.md) file.
 
-For example:
+## Usage
 
-This extension contributes the following settings:
+For install the visual studio code extension, follow this steps:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- Open Visual Studio Code
+- Go to the extension tab in left sidebar
+- Search " Alt to Image Generator"
+- Click in "Install" button next to the search bar
 
-## Known Issues
+# TODO
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- check footer like a sidebar
+         OR
+- dropdown options left sidebar
 
-## Release Notes
+- readme.md ready for colaborators (mas o menos)
+- notion ready
+  
+- split left sidebar in tab
+- look to a fancy way to render images and select then
+- calls to api from extension with service or file
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- when call generate image or alt check the other attribute to prompt

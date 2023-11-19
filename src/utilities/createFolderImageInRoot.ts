@@ -1,24 +1,19 @@
 import { window, workspace } from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-export async function createFolderImageInRoot(text: string) {
+export async function createFolderImageInRoot(pathToSave: string = "public/images") {
     const workspaceFolders = workspace.workspaceFolders;
     if (!workspaceFolders) {
         window.showInformationMessage('Open a folder first to create image folder');
         return;
     }
-
-    
     const rootFolder = workspaceFolders[0].uri.fsPath;
-    const folderImagesName = text;
-    const folderPublicName = "public";
-    const folderPublicPath = path.join(rootFolder, folderPublicName);
-    const folderImagePublicPath = path.join(folderPublicPath, folderImagesName);
-    if (fs.existsSync(folderImagePublicPath)) {
+
+    const folderPath = path.join(rootFolder, pathToSave);
+    if (fs.existsSync(folderPath)) {
         window.showInformationMessage('Folder already exists');
         return;
     }
-    fs.mkdirSync(folderPublicPath);
-    fs.mkdirSync(folderImagePublicPath);
+    fs.mkdirSync(folderPath);
     window.showInformationMessage('Folder created');
 }

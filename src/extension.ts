@@ -36,7 +36,7 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     window.registerWebviewViewProvider(GenerateAltImgViewProvider.viewType, provider));
-    context.subscriptions.push(panel);
+  context.subscriptions.push(panel);
 
 }
 
@@ -64,11 +64,11 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
 
   public static readonly viewType = 'alt-to-img-generator-view';
 
-	constructor(
-		private readonly _extensionUri: Uri,
+  constructor(
+    private readonly _extensionUri: Uri,
     private readonly _disposables: Disposable[] = []
 
-	) { }
+  ) { }
 
   public resolveWebviewView(
     webviewView: WebviewView,
@@ -83,7 +83,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
         this._extensionUri
       ]
     };
-		webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
+    webviewView.webview.html = this._getWebviewContent(webviewView.webview, this._extensionUri);
     this._setWebviewMessageListener(webviewView.webview);
 
   }
@@ -157,7 +157,7 @@ class GenerateAltImgViewProvider implements WebviewViewProvider {
     );
   }
 
-  
+
 }
 
 function getWebviewContent(cat: keyof typeof cats) {
