@@ -1,7 +1,12 @@
-import fetch from 'node-fetch';
-import fs from 'fs';
 import path from 'path';
 import OpenAI from 'openai';
+import fetch from 'node-fetch';
+import fs, { createWriteStream } from 'fs';
+import { createFolderImageInRoot } from '../utilities/createFolderImageInRoot';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+
+const pipe = promisify(pipeline);
 
 export async function imageFromOpenAI(query: string, folderPath: string, OPENAI_API_KEY: string): Promise<string> {
     const timeout = new Promise((resolve, reject) => {
@@ -41,30 +46,20 @@ async function fetchImageFromOpenAIapi(prompt: string, OPENAI_API_KEY: string): 
     return firstImage.url;
 }
 
-async function downloadImage(url: string, folderPath: string): Promise<string> {
-   
 
+async function downloadImage(url: string, pathToSave: string): Promise<string> {
+    const folderPath = await createFolderImageInRoot(pathToSave);
     const response = await fetch(url);
     if (!response.ok) {throw new Error(`Failed to download image. Status code: ${response.status}`);}
-
     const fileName = path.basename(new URL(url).pathname);
-    const filePath = path.join(folderPath, fileName);
-    const fileStream = fs.createWriteStream(filePath);
+    const fileStream = createWriteStream(folderPath + '/' + fileName);
     
-    // await new Promise((resolve, reject) => {
-    //     response.body.pipe(fileStream);
-    //     response.body.on("error", reject);
-    //     fileStream.on("finish", resolve);
-    // });
 
-    await new Promise((resolve, reject) => {
-        response.body.pipe(fileStream);
-        response.body.on('error', (err) => {
-            fileStream.close();
-            reject(err);
-        });
-        fileStream.on('finish', resolve);
-    });
-
-    return filePath;
+    if (response.body) {
+        await pipe(response.body, fileStream);
+    } else {
+        throw new Error('Response body is null');
+    }
+    // @ts-ignore
+    return folderPath;
 }
